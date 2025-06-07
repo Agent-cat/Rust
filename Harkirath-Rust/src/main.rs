@@ -1,18 +1,10 @@
-use std::sync::{Arc, Mutex};
-use std::thread;
 fn main() {
-    let counter = Arc::new(Mutex::new(0));
-    let mut handles = vec![];
-    for _ in 1..10 {
-        let counter = Arc::clone(&counter);
-        let handle = thread::spawn(move || {
-            let mut num = counter.lock().unwrap();
-            *num += 1;
-        });
-        handles.push(handle);
+    let mut num = 10;
+    let x = &num as *const i32; // It is raw pointer
+    let y = &mut num as *mut i32; // It is raw pointer
+
+    unsafe {
+        println!("{}", *x);
+        println!("{}", *y);
     }
-    for handle in handles {
-        handle.join().unwrap();
-    }
-    println!("Result {:?}", counter);
 }
