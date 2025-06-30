@@ -156,7 +156,20 @@ endobj
 /BleedBox [0.0 7.8299813 595.5 850.07996]
 /TrimBox [0.0 7.8299813 595.5 850.07996]
 /CropBox [0.0 7.8299813 595.5 850.07996]
-/Rotate 0
+/Rot# Enhanced swayidle configuration with media-aware power management
+exec-once = swayidle -w \
+    timeout 300 'if ! playerctl status 2>/dev/null | grep -q "Playing"; then swaylock -f; fi' \
+    timeout 600 'if ! playerctl status 2>/dev/null | grep -q "Playing"; then systemctl suspend; fi' \
+    timeout 1200 'if ! playerctl status 2>/dev/null | grep -q "Playing"; then systemctl hibernate; fi' \
+    timeout 1800 'systemctl poweroff' \
+    before-sleep 'swaylock -f' \
+    after-resume 'swaymsg "output * dpms on"'
+
+exec-once = swayidle -w \
+	timeout 300 'playerctl status | grep -q Playing || systemctl hibernate' \
+    timeout 420 'playerctl status | grep -q Playing || systemctl suspend' \
+    timeout 600 'playerctl status | grep -q Playing || systemctl poweroff' \
+    before-sleep 'swaylock -fate 0
 /Annots []
 >>
 endobj
